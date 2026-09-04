@@ -1,6 +1,7 @@
 import unittest
 import os
-from index import process_file
+from index import process_file, apply_hex
+
 
 
 class TestProcessFile(unittest.TestCase):
@@ -32,6 +33,22 @@ class TestProcessFile(unittest.TestCase):
         if os.path.exists(self.out):
             os.remove(self.out)
 
+class TestApplyHex(unittest.TestCase):
+    def test_basic_conversion(self):
+        result = apply_hex(["1E", "(hex)"])
+        self.assertEqual(result, ["30"])
+    
+    def test_hex_with_surrounding_words(self):
+        result = apply_hex(["The", "value", "is", "1E", "(hex)", "today"])
+        self.assertEqual(result, ["The", "value", "is", "30", "today"])
+
+    def test_hex_without_previous_word(self):
+        result = apply_hex(["(hex)", "today"])
+        self.assertEqual(result, ["(hex)", "today"])
+    
+    def test_hex_invalid(self):
+        result = apply_hex(["hello", "(hex)", "today"])
+        self.assertEqual(result,  ["hello", "(hex)", "today"])
 
 if __name__ == "__main__":
     unittest.main()
