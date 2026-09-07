@@ -1,6 +1,6 @@
 import unittest
 import os
-from index import process_file, apply_hex
+from index import process_file, apply_hex , apply_bin
 
 
 
@@ -49,6 +49,23 @@ class TestApplyHex(unittest.TestCase):
     def test_hex_invalid(self):
         result = apply_hex(["hello", "(hex)", "today"])
         self.assertEqual(result,  ["hello", "(hex)", "today"])
+
+class TestApplyBin(unittest.TestCase):
+    def test_basic_conversion(self):
+        result = apply_bin(["101", "(bin)"])
+        self.assertEqual(result, ["5"])
+    
+    def test_bin_with_surrounding_words(self):
+        result = apply_bin(["The", "value", "is", "101", "(bin)", "today"])
+        self.assertEqual(result, ["The", "value", "is", "5", "today"])
+
+    def test_bin_without_previous_word(self):
+        result = apply_bin(["(bin)", "today"])
+        self.assertEqual(result, ["(bin)", "today"])
+    
+    def test_bin_invalid(self):
+        result = apply_bin(["hello", "(bin)", "today"])
+        self.assertEqual(result,  ["hello", "(bin)", "today"])
 
 if __name__ == "__main__":
     unittest.main()
