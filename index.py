@@ -55,6 +55,60 @@ def apply_bin(tokens):
 
     return result
 
+def apply_case(tokens):
+    i = 0
+    result = []
+    
+    while i < len(tokens):
+        if i + 1 < len(tokens):
+            if "up" in tokens[i+1] or "low" in tokens[i+1] or "cap" in tokens[i+1]:
+                # ... this is the new, harder part — figure out below
+                pass
+        
+        result.append(tokens[i])
+        i += 1
+
+    return result
+
+def case_apply(token):
+    tokens = re.findall(r"\(.*?\)|\S+", token)
+
+    case_functions = {
+        "(up)": str.upper,
+        "(cap)": str.capitalize,
+        "(low)": str.lower
+    }
+
+    i = 0
+    while i + 1 < len(tokens):
+        makers = tokens[i+1]
+        if makers in case_functions:
+            tokens[i] = case_functions[makers](tokens[i])
+            tokens.pop(i+1)
+        else:
+            i += 1
+
+    return " ".join(tokens)
+
+def parse_case_marker(marker):
+
+    parts = marker.split(",")
+    count = 0
+    if len(parts) == 1:
+        count = 1
+    else:
+        count = int(parts[1].rstrip(")"))
+
+    if "up" in marker:
+        case_type = "up"
+
+    elif "cap" in marker:
+        case_type = "cap"
+
+    elif "low" in marker:
+        case_type = "low"
+    
+    return case_type, count
 
 
 def process_file(input_path, output_path):
