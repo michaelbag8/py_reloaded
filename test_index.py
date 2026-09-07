@@ -1,6 +1,6 @@
 import unittest
 import os
-from index import process_file, apply_hex , apply_bin
+from index import process_file, apply_hex, apply_bin, apply_case
 
 
 
@@ -66,6 +66,31 @@ class TestApplyBin(unittest.TestCase):
     def test_bin_invalid(self):
         result = apply_bin(["hello", "(bin)", "today"])
         self.assertEqual(result,  ["hello", "(bin)", "today"])
+
+class TestApplyCase(unittest.TestCase):
+    def test_basic_case_up(self):
+        result = apply_case(["hello", "(up)"])
+        self.assertEqual(result,["HELLO"])
+
+    def test_basic_case_low(self):
+        result = apply_case(["HELLO", "(low)"])
+        self.assertEqual(result,["hello"])
+    
+    def test_basic_case_cap(self):
+        result = apply_case(["hello", "(cap)"])
+        self.assertEqual(result,["Hello"])
+
+    def test_counted(self):
+        result = apply_case(["the", "quick", "fox", "(up, 2)"])
+        self.assertEqual(result,["the","QUICK","FOX"])
+
+    def test_overflow(self):
+        result = apply_case(["the", "quick", "fox", "(up, 5)"])
+        self.assertEqual(result,["THE","QUICK","FOX"])
+
+    def test_no_word_before(self):
+        result = apply_case(["(up)", "today"])
+        self.assertEqual(result,["(up)", "today"])
 
 if __name__ == "__main__":
     unittest.main()
