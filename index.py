@@ -62,11 +62,19 @@ def apply_case(tokens):
     while i < len(tokens):
 
         if "up" in tokens[i] or "low" in tokens[i] or "cap" in tokens[i]:
-
             marker, count = parse_case_marker(tokens[i])
             actual_count = min(count, len(result))
-        
-        result.append(tokens[i])
+            
+            words_to_transform = result[-actual_count:]
+            if case_type == "up":
+                transformed = [w.upper() for w in words_to_transform]
+            elif case_type == "low":
+                transformed = [w.lower() for w in words_to_transform]
+            elif case_type == "cap":
+                transformed = [w.capitalize() for w in words_to_transform]
+              
+        else:
+            result.append(tokens[i])
         i += 1
 
     return result
