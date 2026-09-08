@@ -60,13 +60,12 @@ def apply_case(tokens):
     result = []
     
     while i < len(tokens):
-        if i + 1 < len(tokens):
-            if "up" in tokens[i+1] or "low" in tokens[i+1] or "cap" in tokens[i+1]:
-                marker, count = parse_case_marker(tokens)
+            if "up" in tokens[i] or "low" in tokens[i] or "cap" in tokens[i]:
+                marker, count = parse_case_marker(tokens[i])
                 actual_count = min(count, len(result))
         
-        result.append(tokens[i])
-        i += 1
+    result.append(tokens[i])
+    i += 1
 
     return result
 
