@@ -1,4 +1,5 @@
 import sys
+import re
 
 
 def apply_hex(tokens):
@@ -62,7 +63,7 @@ def apply_case(tokens):
     while i < len(tokens):
 
         if "up" in tokens[i] or "low" in tokens[i] or "cap" in tokens[i]:
-            marker, count = parse_case_marker(tokens[i])
+            case_type, count = parse_case_marker(tokens[i])
             actual_count = min(count, len(result))
             
             words_to_transform = result[-actual_count:]
@@ -72,6 +73,8 @@ def apply_case(tokens):
                 transformed = [w.lower() for w in words_to_transform]
             elif case_type == "cap":
                 transformed = [w.capitalize() for w in words_to_transform]
+
+            result[-actual_count:] = transformed
               
         else:
             result.append(tokens[i])
@@ -79,25 +82,25 @@ def apply_case(tokens):
 
     return result
 
-def case_apply(token):
-    tokens = re.findall(r"\(.*?\)|\S+", token)
+# def case_apply(token):
+#     tokens = re.findall(r"\(.*?\)|\S+", token)
 
-    case_functions = {
-        "(up)": str.upper,
-        "(cap)": str.capitalize,
-        "(low)": str.lower
-    }
+#     case_functions = {
+#         "(up)": str.upper,
+#         "(cap)": str.capitalize,
+#         "(low)": str.lower
+#     }
 
-    i = 0
-    while i + 1 < len(tokens):
-        makers = tokens[i+1]
-        if makers in case_functions:
-            tokens[i] = case_functions[makers](tokens[i])
-            tokens.pop(i+1)
-        else:
-            i += 1
+#     i = 0
+#     while i + 1 < len(tokens):
+#         makers = tokens[i+1]
+#         if makers in case_functions:
+#             tokens[i] = case_functions[makers](tokens[i])
+#             tokens.pop(i+1)
+#         else:
+#             i += 1
 
-    return " ".join(tokens)
+#     return " ".join(tokens)
 
 def parse_case_marker(marker):
 
@@ -125,6 +128,8 @@ def process_file(input_path, output_path):
     with open(input_path, "r") as file:
         content = file.read()
     
+    content = re.findall(r"\(.*?\)|\S+", content)
+    content = apply_case(content)
 
     with open(output_path, "w") as file:
         file.write(content)
